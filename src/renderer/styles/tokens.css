@@ -1,0 +1,89 @@
+:root {
+  color-scheme: light;
+  --bg: #f0f2f0;
+  --text: #1a2e2a;
+  --muted: #7a8a86;
+  --line: #e2e8e4;
+  --surface: #ffffff;
+  --teal: #0d7e6f;
+  --teal-light: #e4f7f3;
+  --coral: #d4583a;
+  --coral-light: #fde9e2;
+  --green: #2f8c4a;
+  --gauge-bg: #f5f7f6;
+  --gauge-track: #e2e6e4;
+  --tick-major: #aab5b0;
+  --tick-minor: #d0d6d3;
+  --shadow-md: 0 2px 8px rgba(20, 40, 36, 0.06), 0 1px 2px rgba(20, 40, 36, 0.03);
+  --shadow-lg: 0 8px 30px rgba(20, 40, 36, 0.10);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #141a18;
+  --text: #e4e8e6;
+  --muted: #8a9692;
+  --line: #2a3330;
+  --surface: #1e2623;
+  --teal-light: #0f2e29;
+  --coral-light: #2e1a14;
+  --gauge-bg: #1e2623;
+  --gauge-track: #2a3330;
+  --tick-major: #5a6662;
+  --tick-minor: #3a4440;
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .water-card {
+  background: linear-gradient(175deg, #1e2623 0%, #162420 100%);
+}
+
+[data-theme="dark"] .stand-card {
+  background: linear-gradient(175deg, #1e2623 0%, #261c18 100%);
+}
+
+[data-theme="dark"] .gauge-bg {
+  fill: #1a2220;
+  stroke: #2a3330;
+}
+
+[data-theme="dark"] .btn-primary:disabled {
+  background: #3a4440;
+}
+
+[data-theme="dark"] .btn-secondary {
+  background: #1e2623;
+  border-color: #2a3330;
+  color: #e4e8e6;
+}
+
+[data-theme="dark"] .dialog-close {
+  background: #2a3330;
+}
+
+[data-theme="dark"] .dialog-card {
+  background: var(--surface);
+}
+
+[data-theme="dark"] .toggle-slider {
+  background: #3a4440;
+}
+
+[data-theme="dark"] input[type="number"],
+[data-theme="dark"] input[type="time"],
+[data-theme="dark"] .work-tasks-title-input,
+[data-theme="dark"] .work-tasks-priority-select,
+[data-theme="dark"] .work-tasks-note-input {
+  background: #1a2220;
+  border-color: #2a3330;
+  color: #e4e8e6;
+}
+
+[data-theme="dark"] .btn-start {
+  background: #e4e8e6;
+  color: #141a18;
+}

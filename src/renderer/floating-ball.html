@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>悬浮球</title>
+    <style>
+      :root {
+        --urgency: 0;
+        --pulse-period: 1.8s;
+        --remain: 1;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: transparent;
+        user-select: none;
+        -webkit-app-region: no-drag;
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #ball {
+        width: var(--card-width, 130px);
+        height: var(--card-height, 57px);
+        border-radius: calc(var(--card-size, 84px) * 0.1);
+        background: rgba(28, 30, 33, 0.82);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        box-shadow:
+          0 4px 18px rgba(0, 0, 0, 0.16),
+          inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+        gap: calc(var(--card-size, 84px) * 0.04);
+        padding: calc(var(--card-size, 84px) * 0.1) calc(var(--card-size, 84px) * 0.12);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition:
+          transform 0.16s ease,
+          box-shadow 0.2s ease,
+          border-color 0.2s ease,
+          background 0.2s ease;
+        -webkit-app-region: drag;
+      }
+      #ball:hover {
+        transform: translateY(-1px);
+        background: rgba(34, 36, 40, 0.88);
+        border-color: rgba(255, 255, 255, 0.11);
+        box-shadow:
+          0 6px 22px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      }
+      #ball:active { transform: translateY(0); }
+      #ball.action-mode {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        -webkit-app-region: no-drag;
+        border-width: calc(1px + var(--urgency) * 3px);
+        transform: scale(calc(1 + var(--urgency) * 0.03));
+        animation: action-pulse var(--pulse-period) ease-in-out infinite;
+      }
+      #ball.action-mode::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        opacity: calc(0.18 + var(--urgency) * 0.42);
+        background: radial-gradient(circle at 50% 35%, var(--accent-soft), transparent 68%);
+        pointer-events: none;
+      }
+      #ball.action-mode::after {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: inherit;
+        border: 2px solid var(--accent);
+        opacity: calc(0.35 + var(--urgency) * 0.55);
+        box-shadow: 0 0 calc(10px + var(--urgency) * 30px) var(--accent-glow);
+        pointer-events: none;
+      }
+      #ball.action-mode.water {
+        --accent: #3ec8ff;
+        --accent-soft: rgba(62, 200, 255, 0.45);
+        --accent-glow: rgba(62, 200, 255, 0.75);
+        --accent-deep: #0a5f8c;
+        background: linear-gradient(
+          155deg,
+          rgba(10, 95, 140, calc(0.75 + var(--urgency) * 0.2)),
+          rgba(20, 140, 200, calc(0.55 + var(--urgency) * 0.25))
+        );
+      }
+      #ball.action-mode.stand {
+        --accent: #ffbf47;
+        --accent-soft: rgba(255, 191, 71, 0.42);
+        --accent-glow: rgba(255, 191, 71, 0.72);
+        --accent-deep: #8a5a12;
+        background: linear-gradient(
+          155deg,
+          rgba(120, 78, 18, calc(0.75 + var(--urgency) * 0.2)),
+          rgba(200, 140, 40, calc(0.55 + var(--urgency) * 0.25))
+        );
+      }
+      #ball.action-mode:hover {
+        transform: scale(calc(1.03 + var(--urgency) * 0.04)) translateY(-2px);
+      }
+      #ball.action-mode.urgency-high {
+        animation-name: action-pulse-strong;
+      }
+      @keyframes action-pulse {
+        0%, 100% { filter: brightness(1); }
+        50% { filter: brightness(calc(1.04 + var(--urgency) * 0.12)); }
+      }
+      @keyframes action-pulse-strong {
+        0%, 100% { filter: brightness(1); transform: scale(calc(1 + var(--urgency) * 0.03)); }
+        50% { filter: brightness(calc(1.1 + var(--urgency) * 0.15)); transform: scale(calc(1.04 + var(--urgency) * 0.05)); }
+      }
+      #normal-view {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: calc(var(--card-size, 84px) * 0.1);
+        width: 100%;
+      }
+      .timers {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--card-size, 84px) * 0.04);
+        min-width: 0;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--card-size, 84px) * 0.07);
+        min-height: calc(var(--card-size, 84px) * 0.19);
+      }
+      .dot {
+        width: calc(var(--card-size, 84px) * 0.06);
+        height: calc(var(--card-size, 84px) * 0.06);
+        border-radius: 2px;
+        flex-shrink: 0;
+        opacity: 0.9;
+      }
+      .dot.water { background: #7eb3d4; }
+      .dot.stand { background: #b9a27a; }
+      .time {
+        font-size: calc(var(--card-size, 84px) * 0.155);
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.03em;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1;
+        white-space: nowrap;
+      }
+      .time.muted {
+        color: rgba(255, 255, 255, 0.38);
+        font-weight: 400;
+      }
+      .task-count {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        min-width: calc(var(--card-size, 84px) * 0.34);
+        padding: calc(var(--card-size, 84px) * 0.02) calc(var(--card-size, 84px) * 0.04);
+        border-left: 1px solid rgba(255, 255, 255, 0.08);
+        padding-left: calc(var(--card-size, 84px) * 0.1);
+      }
+      .task-count-num {
+        font-size: calc(var(--card-size, 84px) * 0.22);
+        font-weight: 650;
+        font-variant-numeric: tabular-nums;
+        color: rgba(255, 255, 255, 0.92);
+        line-height: 1;
+      }
+      .task-count-num.empty {
+        color: rgba(255, 255, 255, 0.38);
+        font-weight: 500;
+      }
+      .task-count-label {
+        margin-top: calc(var(--card-size, 84px) * 0.03);
+        font-size: calc(var(--card-size, 84px) * 0.1);
+        color: rgba(255, 255, 255, 0.45);
+        letter-spacing: 0.04em;
+        line-height: 1;
+        white-space: nowrap;
+      }
+      #action-view {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(var(--card-size, 84px) * 0.03);
+        width: 100%;
+      }
+      .action-ring {
+        position: absolute;
+        inset: calc(var(--card-size, 84px) * -0.04);
+        width: calc(100% + var(--card-size, 84px) * 0.08);
+        height: calc(100% + var(--card-size, 84px) * 0.08);
+        transform: rotate(-90deg);
+        pointer-events: none;
+        opacity: calc(0.55 + var(--urgency) * 0.45);
+      }
+      .action-ring circle {
+        fill: none;
+        stroke-width: 3.2;
+        stroke-linecap: round;
+      }
+      .action-ring .track { stroke: rgba(255, 255, 255, 0.12); }
+      .action-ring .progress {
+        stroke: var(--accent);
+        stroke-dasharray: 100 100;
+        stroke-dashoffset: calc((1 - var(--remain)) * 100);
+        filter: drop-shadow(0 0 calc(4px + var(--urgency) * 8px) var(--accent-glow));
+        transition: stroke-dashoffset 0.15s linear;
+      }
+      .action-icon {
+        font-size: calc(var(--card-size, 84px) * (0.2 + var(--urgency) * 0.08));
+        line-height: 1;
+        filter: drop-shadow(0 0 calc(6px + var(--urgency) * 14px) var(--accent-glow));
+      }
+      .action-title {
+        font-size: calc(var(--card-size, 84px) * (0.19 + var(--urgency) * 0.07));
+        font-weight: 700;
+        color: #fff;
+        line-height: 1.15;
+        white-space: nowrap;
+        letter-spacing: 0.06em;
+        text-shadow:
+          0 0 calc(8px + var(--urgency) * 18px) var(--accent-glow),
+          0 1px 2px rgba(0, 0, 0, 0.35);
+      }
+      .action-countdown {
+        font-size: calc(var(--card-size, 84px) * (0.105 + var(--urgency) * 0.03));
+        font-weight: 600;
+        color: rgba(255, 255, 255, calc(0.55 + var(--urgency) * 0.4));
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+        letter-spacing: 0.04em;
+      }
+      #ball.action-mode.urgency-high .action-countdown {
+        color: #fff;
+      }
+      .hidden { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <div id="ball" title="左键切换窗口 | 滚轮缩放 | 右键菜单">
+      <div id="normal-view">
+        <div class="timers">
+          <div class="row" id="water-row">
+            <span class="dot water" aria-hidden="true"></span>
+            <span class="time" id="water-label">--:--</span>
+          </div>
+          <div class="row" id="stand-row">
+            <span class="dot stand" aria-hidden="true"></span>
+            <span class="time" id="stand-label">--:--</span>
+          </div>
+        </div>
+        <div class="task-count" id="task-count-wrap" title="未完成工作事项">
+          <span class="task-count-num" id="task-count">0</span>
+          <span class="task-count-label">待办</span>
+        </div>
+      </div>
+      <div id="action-view" class="hidden">
+        <svg class="action-ring" viewBox="0 0 36 36" aria-hidden="true">
+          <circle class="track" cx="18" cy="18" r="15.9" pathLength="100" />
+          <circle class="progress" id="action-ring-progress" cx="18" cy="18" r="15.9" pathLength="100" />
+        </svg>
+        <span class="action-icon" id="action-icon">💧</span>
+        <span class="action-title" id="action-title">去喝水</span>
+        <span class="action-countdown" id="action-countdown"></span>
+      </div>
+    </div>
+    <script type="module" src="./floating-ball.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,75 @@
+{
+  "name": "hydration-stand-reminder",
+  "productName": "桌面效率工具箱",
+  "version": "2.0.0",
+  "description": "Desktop efficiency toolbox with reminders, clipboard, notes, and more.",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "dist": "electron-vite build && electron-builder",
+    "test": "vitest run",
+    "lint": "eslint src --ext .ts"
+  },
+  "keywords": [
+    "electron",
+    "reminder",
+    "hydration",
+    "stand"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4.7.0",
+    "electron": "^31.7.7",
+    "electron-builder": "^26.15.2",
+    "electron-vite": "^2.3.0",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0",
+    "vitest": "^2.1.8"
+  },
+  "build": {
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "${productName} Setup ${version}.${ext}"
+    },
+    "directories": {
+      "output": "C:/build/demo1-dist"
+    },
+    "appId": "com.hydration-stand-reminder.app",
+    "icon": "build/icon.png",
+    "extraResources": [
+      {
+        "from": "build/icon.png",
+        "to": "icon.png"
+      }
+    ],
+    "files": [
+      "out/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.png",
+      "executableName": "DesktopToolbox"
+    }
+  },
+  "dependencies": {
+    "chart.js": "^4.5.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "systeminformation": "^5.31.7"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "electron",
+      "electron-winstaller"
+    ]
+  }
+}
