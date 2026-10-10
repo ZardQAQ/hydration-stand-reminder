@@ -2,6 +2,13 @@
 
 基于 Electron 的 Windows 桌面健康提醒应用，支持定时喝水/站立提醒、历史统计、系统监控与托盘后台运行。
 
+## 下载
+
+发布页：[v2.0.0](https://github.com/ZardQAQ/hydration-stand-reminder/releases/tag/v2.0.0)
+
+- [安装包](https://github.com/ZardQAQ/hydration-stand-reminder/releases/download/v2.0.0/hydration-stand-reminder-2.0.0-setup.exe)：双击按向导安装
+- [免安装包](https://github.com/ZardQAQ/hydration-stand-reminder/releases/download/v2.0.0/hydration-stand-reminder-2.0.0-portable.zip)：解压后运行 `DesktopToolbox.exe`
+
 ## 功能
 
 - 喝水与站立定时提醒（系统通知 + 应用内对话框）
